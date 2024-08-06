@@ -1,6 +1,7 @@
 package com.menumaster.menumaster.security;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -44,6 +45,20 @@ public class JwtTokenService {
                     .getSubject(); // Obtém o assunto (neste caso, o nome de usuário) do token
         } catch (JWTVerificationException exception){
             throw new JWTVerificationException("Token inválido ou expirado.");
+        }
+    }
+
+    // Método para verificar a validade do token JWT
+    public boolean isTokenValid(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer(ISSUER)
+                    .build();
+            verifier.verify(token); // Verifica a validade do token
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
         }
     }
 

@@ -26,7 +26,8 @@ public class SecurityConfiguration {
     // Endpoints that do not require authentication
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/users/login", // URL for login
-            "/users" // URL to create a user
+            "/users", // URL to create a user
+            "/users/validate-token" // Adiciona este endpoint aqui
     };
 
     // Endpoints that require authentication

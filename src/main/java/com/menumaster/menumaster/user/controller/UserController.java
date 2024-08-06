@@ -1,5 +1,6 @@
 package com.menumaster.menumaster.user.controller;
 
+import com.menumaster.menumaster.security.JwtTokenService;
 import com.menumaster.menumaster.user.domain.dto.CreateUserDto;
 import com.menumaster.menumaster.user.domain.dto.LoginUserDto;
 import com.menumaster.menumaster.user.domain.dto.RecoveryJwtTokenDto;
@@ -18,10 +19,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtTokenService jwtTokenService;
+
     @PostMapping("/login")
     public ResponseEntity<RecoveryJwtTokenDto> authenticateUser(@RequestBody LoginUserDto loginUserDto) {
         RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<String> validateToken(@RequestHeader("Authorization") String tokenHeader) {
+        // Remove "Bearer " do token
+        String token = tokenHeader.replace("Bearer ", "");
+
+        if (jwtTokenService.isTokenValid(token)) {
+            return ResponseEntity.ok("Token válido");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido");
+        }
     }
 
     @PostMapping
