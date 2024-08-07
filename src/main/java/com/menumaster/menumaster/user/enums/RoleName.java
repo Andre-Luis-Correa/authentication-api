@@ -1,4 +1,4 @@
-package com.menumaster.menumaster.enums;
+package com.menumaster.menumaster.user.enums;
 
 public enum RoleName {
 

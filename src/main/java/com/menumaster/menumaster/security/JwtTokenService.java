@@ -6,11 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.menumaster.menumaster.user.utils.UserDetailsImpl;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtTokenService {
@@ -21,14 +23,19 @@ public class JwtTokenService {
 
     public String generateToken(UserDetailsImpl user) {
         try {
-            // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            // Coleta a roles do usuário como uma string separada por vírgulas
+            String role = user.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(","));
+
             return JWT.create()
-                    .withIssuer(ISSUER) // Define o emissor do token
-                    .withIssuedAt(creationDate()) // Define a data de emissão do token
-                    .withExpiresAt(expirationDate()) // Define a data de expiração do token
-                    .withSubject(user.getUsername()) // Define o assunto do token (neste caso, o nome de usuário)
-                    .sign(algorithm); // Assina o token usando o algoritmo especificado
+                    .withIssuer(ISSUER)
+                    .withIssuedAt(creationDate())
+                    .withExpiresAt(expirationDate())
+                    .withSubject(user.getUsername())
+                    .withClaim("role", role)
+                    .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);
         }

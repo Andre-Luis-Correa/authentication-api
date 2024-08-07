@@ -1,6 +1,6 @@
 package com.menumaster.menumaster.user.domain.dto;
 
-import com.menumaster.menumaster.enums.RoleName;
+import com.menumaster.menumaster.user.enums.RoleName;
 
 public record CreateUserDto(
 

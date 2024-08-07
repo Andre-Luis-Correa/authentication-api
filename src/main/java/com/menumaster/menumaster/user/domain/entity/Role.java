@@ -1,6 +1,6 @@
 package com.menumaster.menumaster.user.domain.entity;
 
-import com.menumaster.menumaster.enums.RoleName;
+import com.menumaster.menumaster.user.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

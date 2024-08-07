@@ -7,6 +7,7 @@ import com.menumaster.menumaster.user.domain.dto.LoginUserDto;
 import com.menumaster.menumaster.user.domain.dto.RecoveryJwtTokenDto;
 import com.menumaster.menumaster.user.domain.entity.Role;
 import com.menumaster.menumaster.user.domain.entity.User;
+import com.menumaster.menumaster.user.repository.RoleRepository;
 import com.menumaster.menumaster.user.repository.UserRepository;
 import com.menumaster.menumaster.user.utils.UserDetailsImpl;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +35,9 @@ public class UserService {
     @Autowired
     private SecurityConfiguration securityConfiguration;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     // Método responsável por autenticar um usuário e retornar um token JWT
     public RecoveryJwtTokenDto authenticateUser(LoginUserDto loginUserDto) {
         // Cria um objeto de autenticação com o email e a senha do usuário
@@ -52,17 +56,16 @@ public class UserService {
 
     // Método responsável por criar um usuário
     public void createUser(CreateUserDto createUserDto) {
+        Role userRole = roleRepository.findByName(createUserDto.role())
+                .orElseGet(() -> roleRepository.save(new Role(null, createUserDto.role())));
 
-        // Cria um novo usuário com os dados fornecidos
         User newUser = User.builder()
                 .email(createUserDto.email())
-                // Codifica a senha do usuário com o algoritmo bcrypt
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
-                // Atribui ao usuário uma permissão específica
-                .roles(List.of(Role.builder().name(createUserDto.role()).build()))
+                .role(userRole)
                 .build();
 
-        // Salva o novo usuário no banco de dados
         userRepository.save(newUser);
     }
+
 }
