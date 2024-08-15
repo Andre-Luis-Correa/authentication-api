@@ -64,7 +64,7 @@ public class UserService {
                 .role(userRole)
                 .build();
 
-        return newUser;
+        return userRepository.save(newUser);
     }
 
 }

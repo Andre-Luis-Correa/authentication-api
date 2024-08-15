@@ -29,12 +29,6 @@ public class SecurityConfiguration {
             "/authentication/create-user",
             "/authentication/validate-token",
 
-            // Customer
-            "/customer",
-            "/customer/{id}", // -> necessita autenticação
-            "/customer/all", // -> necessita autenticação
-            "/customer/all-pageable", // -> necessita autenticação
-
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**"
