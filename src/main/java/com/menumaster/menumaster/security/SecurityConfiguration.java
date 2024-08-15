@@ -1,7 +1,7 @@
 package com.menumaster.menumaster.security;
 
-import com.menumaster.menumaster.user.utils.UserAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.menumaster.menumaster.authentication.utils.UserAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,38 +18,42 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Autowired
-    private UserAuthenticationFilter userAuthenticationFilter;
+    private final UserAuthenticationFilter userAuthenticationFilter;
 
-    // Endpoints that do not require authentication
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/users/login", // URL for login
-            "/users", // URL to create a user
-            "/users/validate-token" // Adiciona este endpoint aqui
+            // Authentication
+            "/authentication/login",
+            "/authentication/create-user",
+            "/authentication/validate-token",
+
+            // Customer
+            "/customer",
+
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     };
 
-    // Endpoints that require authentication
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/users/test"
+            "/authentication/test"
     };
 
-    // Endpoints for customers
     public static final String[] ENDPOINTS_CUSTOMER = {
-            "/users/test/customer"
+            "/authentication/test-customer"
     };
 
-    // Endpoints for administrators
     public static final String[] ENDPOINTS_ADMIN = {
-            "/users/test/administrator"
+            "/authentication/test-administrator"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
@@ -57,7 +61,7 @@ public class SecurityConfiguration {
                         .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
                         .anyRequest().denyAll()
                 )
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add custom authentication filter
+                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

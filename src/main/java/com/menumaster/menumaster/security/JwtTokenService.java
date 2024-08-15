@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.menumaster.menumaster.user.utils.UserDetailsImpl;
+import com.menumaster.menumaster.authentication.utils.UserDetailsImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +24,10 @@ public class JwtTokenService {
     public String generateToken(UserDetailsImpl user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-            // Coleta a roles do usuário como uma string separada por vírgulas
+
             String role = user.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.joining(","));
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.joining(","));
 
             return JWT.create()
                     .withIssuer(ISSUER)
@@ -43,26 +43,27 @@ public class JwtTokenService {
 
     public String getSubjectFromToken(String token) {
         try {
-            // Define o algoritmo HMAC SHA256 para verificar a assinatura do token passando a chave secreta definida
+
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.require(algorithm)
-                    .withIssuer(ISSUER) // Define o emissor do token
+                    .withIssuer(ISSUER)
                     .build()
-                    .verify(token) // Verifica a validade do token
-                    .getSubject(); // Obtém o assunto (neste caso, o nome de usuário) do token
+                    .verify(token)
+                    .getSubject();
         } catch (JWTVerificationException exception){
             throw new JWTVerificationException("Token inválido ou expirado.");
         }
     }
 
-    // Método para verificar a validade do token JWT
     public boolean isTokenValid(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(ISSUER)
                     .build();
-            verifier.verify(token); // Verifica a validade do token
+
+            verifier.verify(token);
             return true;
         } catch (JWTVerificationException e) {
             return false;
