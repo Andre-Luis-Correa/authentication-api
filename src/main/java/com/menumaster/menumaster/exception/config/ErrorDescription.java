@@ -1,4 +1,4 @@
-package com.menumaster.menumaster.exception.domain.entity;
+package com.menumaster.menumaster.exception.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,5 @@ public class ErrorDescription {
 
     private int statusCode;
     private String message;
-    private String details;
 
 }

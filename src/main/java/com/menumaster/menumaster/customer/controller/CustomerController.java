@@ -1,6 +1,5 @@
 package com.menumaster.menumaster.customer.controller;
 
-import com.menumaster.menumaster.authentication.domain.dto.CreateUserDto;
 import com.menumaster.menumaster.authentication.domain.entity.User;
 import com.menumaster.menumaster.authentication.service.UserService;
 import com.menumaster.menumaster.customer.domain.dto.CreateCustomerDTO;
@@ -21,7 +20,7 @@ public class CustomerController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<DetailsCustomerDTO> create(@Valid @RequestBody CreateCustomerDTO createCustomerDTO) {
+    public ResponseEntity<DetailsCustomerDTO> create(@RequestBody @Valid CreateCustomerDTO createCustomerDTO) {
         User user = userService.createUser(createCustomerDTO.createUserDto());
 
         Customer customer = customerService.convertToCustomer(createCustomerDTO, user);

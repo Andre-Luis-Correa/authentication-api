@@ -1,5 +1,10 @@
 package com.menumaster.menumaster.exception.type;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EntityNotFoundException extends RuntimeException {
 
     public EntityNotFoundException(String resource, String id) {
