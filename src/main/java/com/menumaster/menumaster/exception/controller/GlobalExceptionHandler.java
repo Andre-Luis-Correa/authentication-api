@@ -4,13 +4,13 @@ import com.menumaster.menumaster.exception.config.ErrorDescription;
 import com.menumaster.menumaster.exception.type.DuplicateKeyException;
 import com.menumaster.menumaster.exception.type.EntityNotFoundException;
 import com.menumaster.menumaster.exception.type.ValidationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -61,5 +61,24 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    // Handler para capturar DataIntegrityViolationException causada por SQLIntegrityConstraintViolationException
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDescription> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        if (ex.getCause() instanceof SQLIntegrityConstraintViolationException) {
+            SQLIntegrityConstraintViolationException sqlException = (SQLIntegrityConstraintViolationException) ex.getCause();
+            ErrorDescription errorResponse = new ErrorDescription(
+                    HttpStatus.CONFLICT.value(),  // 409 CONFLICT
+                    "Duplicate entry: " + sqlException.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+
+        ErrorDescription errorResponse = new ErrorDescription(
+                HttpStatus.BAD_REQUEST.value(),
+                "Data integrity violation: " + ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
