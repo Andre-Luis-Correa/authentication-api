@@ -14,6 +14,9 @@ public record CreateUserDto(
         String password,
 
         @NotBlank
+        String cpf,
+
+        @NotBlank
         String name,
 
         @NotNull

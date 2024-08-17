@@ -27,6 +27,9 @@ public class User {
     private String password;
 
     @NotBlank
+    private String cpf;
+
+    @NotBlank
     private String name;
 
     @NotNull

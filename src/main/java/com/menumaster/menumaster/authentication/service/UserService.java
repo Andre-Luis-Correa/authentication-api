@@ -60,6 +60,7 @@ public class UserService {
         User newUser = User.builder()
                 .email(createUserDto.email())
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
+                .cpf(createUserDto.cpf())
                 .name(createUserDto.name())
                 .role(userRole)
                 .build();

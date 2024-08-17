@@ -59,4 +59,9 @@ public class AuthenticationController {
         return new ResponseEntity<>("Administrador autenticado com sucesso", HttpStatus.OK);
     }
 
+    @GetMapping("/test-attendant")
+    public ResponseEntity<String> getAttendantAuthenticationTest() {
+        return new ResponseEntity<>("Atendente autenticado com sucesso", HttpStatus.OK);
+    }
+
 }

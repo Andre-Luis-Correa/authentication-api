@@ -35,6 +35,7 @@ public class JwtTokenService {
                     .withExpiresAt(expirationDate())
                     .withSubject(user.getUsername())
                     .withClaim("role", role)
+                    .withClaim("cpf", user.getUser().getCpf())  // Adiciona o CPF ao token
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);
