@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RequestMapping("/authentication")
 public class AuthenticationController {
 
